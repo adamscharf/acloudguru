@@ -271,4 +271,119 @@ IAM allows you to manage users and their level of access to the AWS Console.
 
 ## S3
 
+* Data consistency model for s3
+    * Read after write consistency for PUTS of new Objects
+    * Eventual consistency for overwrite PUTS and DELETES (can take some time to propagate)
+* Object based Key-value Store
+    * Key (name of object)
+    * Value (Data made up of a sequence of bytes)
+    * Version ID
+    * Metadata
+    * Subresources:
+        * Access Control Lists
+        * Torrent
+* Built for 99.99% availability for the s3 platform
+* Amazon guarantees 99.9% availability
+* 99.999999999% (11 x 9s) durability
+* tiered storage available
+* Lifecycle management
+* Versioning
+* Encryption Options
+    * Client Side Encryption
+    * Server Side Encryption
+        * Amazon S3 Managed Keys (SSE-S3)
+        * KMS (SSE-KMS)
+        * Customer provided keys (SS$-C)
+* Access Contol Lists & Bucket Policy
+* By default buckets are private and all objects stored inside are private
+* MFA Delete - requires additional authentication for either of the following operations:
+    * Change the versioning state of your bucket
+    * Permanently delete an object version
+* S3 Transfer Acceleration
+* Static website hosting
+    * Url scheme: `http://<bucket_name>website.s3-website-<region>.amazonaws.com`
+
 [TOC](#toc)
+
+
+### S3 Storage Tiers/Classes
+
+* S3 Standard
+    * 99.99% availability, 99.999999999% durability
+    * Built to sustain loss of 2 facilities concurrently
+    * No retrieval cost
+* S3 - IA (Infrequently Accessed)
+    * Data that is accessed less frequently but requires rapid access when needed.
+    * Lower cost than S3, but you are charged a retrieval fee
+* S3 One Zone - IA (Reduced Redundancy)
+    * Even lower cost but doesn't required multiple AZ data resilience
+* Glacier
+    * Very cheap data archival
+    * Expedited (minutes), Standard (3-5 hrs), or Bulk (~12 hrs)
+
+[TOC](#toc)
+
+
+### Costs
+
+* Storage
+* Requests (Except S3 standard)
+* Storage Management Pricing (tags, metadata)
+* Data transfer pricing (CRR)
+* Transfer acceleration (Use of CloudFront's CDN)
+
+[TOC](#toc)
+
+
+### Security & Encryption
+
+* By default, all newly created buckets are **private**
+* Access Control using:
+    * Bucket Policies
+    * Access Control Lists
+* Access logs can log all requests made to the S3 bucket
+* In transit encryption
+    * SSL/TLS
+* At Rest Encryption
+    * Server Side
+        * S3 Managed Keys - SSE-S3 (Most common)
+        * Key Management Service, Managed Keys - SSE-KMS (provides audit trail)
+        * Customer Provided Keys - SSE-C
+    * Client Side Encryption
+
+[TOC](#toc)
+
+
+## CloudFront
+
+* Edge Location - This is the location where content will be cached. This is separate to an AWS Region/AZ
+    * Not just read only
+* Origin - Origin of all the files that the CDN will distribute
+    * S3 Bucket, EC2 Instance, ELB, or Route53
+* Distribution - Name given to the CDN which consists of a collection of Edge Locations
+    * Web Distribution - Typically used for websites
+    * RTMP - Used for media streaming
+* Objects are cached for the life of the TTL
+* You can clear cached objects, but you will be charged
+
+[TOC](#toc)
+
+## Storage Gateway
+
+* Virtual appliance that you install in your on-prem data centers to replicate data to AWS
+* 4 Types
+    * File Gateway (NFS) - Flat files, stored directly on S3
+    * Volumes gateway (iSCSI) - Block based storage (OS installable). Virtual hard disks that incrementally backup to AWS.
+        * Stored Volumes  - Entire dataset is stored on site (locally) and is asynchronously backed up to S3
+        * Cached Volumes - Entire dataset is store on S3 and the most frequently accessed data is cached on site (locally)
+    * Tape Gateway (VTL)
+        * Used for backup and uses popular backup applications like NetBackup, Backup Exec, Veeam etc.
+
+## Snowball
+
+* Snowball
+* Snowball Edge - 100TB data transfer
+* Snowmobile
+* Snowball can:
+    * Import to S3
+    * Export from S3
