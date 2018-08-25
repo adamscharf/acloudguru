@@ -1,0 +1,34 @@
+---
+Description: "S3 bucket with Lifecycle transitions configured"
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: adamscharf-lifecycle
+      Tags:
+        - Key: Foo
+          Value: Bar
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Transitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+              - StorageClass: Glacier
+                TransitionInDays: 60
+            Status: Enabled
+          - NoncurrentVersionTransitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+              - StorageClass: Glacier
+                TransitionInDays: 60
+            Status: Enabled
+          - NoncurrentVersionExpirationInDays: 425
+            Status: Enabled
+      VersioningConfiguration:
+        Status: Enabled
+      

@@ -1,0 +1,16 @@
+---
+Description: "S3 bucket with SSE-S3 AES256 enabled"
+Resources:
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Delete
+      Properties:
+        BucketName: adamscharf-standard
+        Tags:
+          - Key: Foo
+            Value: Bar
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+          
