@@ -23,8 +23,12 @@
     * [Desktop & App Streaming](#desktop--app-streaming)
     * [Internet of Things](#internet-of-things)
     * [Game Development](#game-development)
-* [IAM 101](#iam-101)
+* [IAM](#iam)
 * [S3](#s3)
+* [Storage Gateway](#storage-gateway)
+* [Snowball](#snowball)
+* [EC2](#ec2)
+
 
 
 ## 10,000 ft Overview
@@ -250,7 +254,7 @@ _Not on exams_
 [TOC](#toc)
 
 
-## IAM 101
+## IAM
 
 IAM allows you to manage users and their level of access to the AWS Console.
 
@@ -302,6 +306,7 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * S3 Transfer Acceleration
 * Static website hosting
     * Url scheme: `http://<bucket_name>website.s3-website-<region>.amazonaws.com`
+* Account limit of 100 buckets by default 
 
 [TOC](#toc)
 
@@ -387,3 +392,179 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * Snowball can:
     * Import to S3
     * Export from S3
+
+## EC2
+
+* Termination protection is turned off by default
+* EBS-backed instance, the default action is for the root EBS volume to be deleted when the intance is terminated
+* EBS Root Volumes of your DEFAULT AMI's cannot be encrypted, BUT it can be done by either of the following methods:
+    * Use a third party tools (bit locker, etc.) to encrypt the root volume
+    * Create a custom AMI in the AWS console or using the API
+* Additional volumes can be encrypted
+* **Instance Metadata**
+    * `curl http://169.254.169.254/latest/meta-data/`
+* AMIs are regional, but can be copied across regions
+
+### Instance Types
+
+| Family | Speciality | Use Case |
+| :----: | ---------- | -------- |
+| F1 | Field programmable Gate Array | Genomics research, financial analytics, real-time video processing, big data, etc.|
+| I3 | High speed storage | NoSQL DBs, Data Warehousing, etc |
+| G3 | Graphics intensive | Video encoding/3D application streaming |
+| H1 | High disk throughput | MapReduce-based workloads, distributed file systems such as HDFS and MapR-FS |
+| T2 | Lowest cost, general purpose | Web servers/small DBs |
+| D2 | Dense storage | Fileservers, data warehousing, hadoop |
+| R4 | Memory optimized | Memory intensive Apps/DBs |
+| M5 | General purpose | Application servers |
+| C5 | Compute optimized | CPU Intensive Apps/DBs |
+| P3 | Graphics/General Purpose GPU | Maching learning, BitCoin Mining, etc. |
+| X1 | Memory Optimized | SAP HANA/Apache Spark, etc |
+
+
+#### FIGHT DR MC PX
+
+![FIGHT DR MC PX](/img/ec2-acronym.png "FIGHT DR MC PX")
+
+
+### Security Groups
+
+* Virtual firewall
+* All inbound traffic is blocked by default
+* All outbound traffic is allowed
+* Changes to SGs take effect immediately
+* you can have any number of EC2 instances within a SG
+* you can have multiple groups attached to EC2 instances
+* SGs are **STATEFUL**
+    * If you create an inbound rule allowing traffic in, that traffic is automatically allowed back out
+* You cannot block specific IP address using SGs, instead use NACLs
+* You can specify allow rules, but not deny rules
+
+
+### EBS Volumes
+
+* Volumes exist on EBS:
+    * Virtual Hard disk
+* Snapshots exist on S3
+* Snapshots are point in time copies of volumes
+* Snapshots are incremental - this means that only the blocks that have changed since your last snapshot are moved to S3
+* To create a snapshot for **root device** EBS volumes, you should stop the instance, but it's not required.
+* You can create AMI's from EBS-backed Instances and Snapshots
+* You can changes EBS volume sizes on the fly, including changing the size and storage type.
+* Volumes will **always** be in the same AZ as the EC2 instance 
+* To move an EC2 volume from one AZ/Region to another, take a snap or an AMI of it, then copy it to the new AZ/Region.
+* Cannot mount 1 EBS volume to multiple EC2 instances; instead use EFS
+
+#### EBS Types
+
+* GP2 - SSD, General Purpose (Up to 10,000 IOPS)
+* IO1 - SSD, Provisioned IOPS (Up to 32,000 IOPS)
+* ST1 - HDD, Throughput optimized, frequently accessed workloads
+* SC1 - HDD, Cold - less frequently accessed data
+* Standard - HDD, Magnetic - cheap, infrequently accessed storage
+
+#### EBS vs Instance Store
+
+* Instance store volumes are sometimes called ephemeral storage
+* Instance store volumes cannot be stopped. If the underlying host fails, you will lose your data.
+* EBS backed instances can be stopped. You will **not** lose the data on this instance if it is stopped.
+* You can reboot both, you will not lose your data.
+* By default, both ROOT volumes will be deleted on termination; however, with EBS volumes, you can tell AWS to keep the root device volume.
+
+
+#### Volumes & Snapshots - Security
+
+* Snapshots of encrypted volumes are encrypted automatically
+* Volumes restored from encrypted snapshots are encrypted automatically
+* You can share snapshots, but only if they are unencrypted
+    * These snapshots can be shared with other AWS accounts or made public
+* Snapshot of RAID array:
+    * Stop the application from writing to disk
+    * Flush all caches to the disk
+    * Done by one of the following:
+        1. Freeze the file system
+        2. Unmount the RAID array
+        3. Shutting down the associated EC2 instance
+
+### Elastic Load Balancers
+
+* 3 Types of Load Balancers
+    * Application Load Balancers (Layer 7)
+    * Network Load Balancers (Layer 4)
+    * Classic Load Balancers (Mostly layer 4, some layer 7)
+* 504 error means the gateway has timed out
+    * Application is not responding within the idle timeout period
+    * Troubleshoot the application. Is it the web server or database server
+* If you need the IPv4 address of your end user, look for the `X-Forwarded-For` header
+
+
+### CloudWatch
+
+* Standard Monitoring = 5 min
+* Detailed Monitoring = 1 min (cost extra)
+* Dashboards, Alarms, Events, Logs
+
+
+### Placement Groups
+
+_**Popular exam topic**_
+
+* Two types of placement groups
+    1. Clustered placement group
+    2. Spread Placement group
+* For the exam, assume it's talking about clustered placement group unless it states otherwise
+
+
+#### Clustered placement group
+
+* Grouping of instances within a **single AZ.**
+* Recommended for applications that need low network latency, high network throughput, or both.
+* Only certain instances can be launched into a Clustered Placement Group
+* Requires unique name within AWS account
+
+
+#### Spread Placement group
+
+* Grouping of instances that are each placed on distinct underlying hardware
+* Recommended for applications that have a small number of critical instances that should be kept separate from each other
+* _Can_ spread across multiple AZs
+* Released at re:Invent 2017
+
+### EFS
+
+* Elastic File System - File storage service for EC2 instances
+* Only pay for the storage you use (no pre-provisioning required)
+* Read after Write Consistency
+* Works well for a file server
+* Can be attached to multiple EC2 instances, unlike EBS
+
+
+## Lambda
+
+* Event-based compute
+    * 1 event = 1 (or more) function
+* Scalles out (not up) automatically
+* Lambda triggers:
+    * **API Gateway**
+    * AWS IoT
+    * **Alexa Skills Kit**
+    * **Alexa Smart Home**
+    * **CloudFront**
+    * **CloudWatch Events**
+    * **CloudWatch Logs**
+    * CodeCommit
+    * Cognito Sync Trigger
+    * **DynamoDB**
+    * **Kinesis**
+    * **S3**
+    * **SNS**
+* Languages:
+    * C# (.Net Core)
+    * Go
+    * Java
+    * Node.js
+    * Python
+* Priced by number of requests
+    * First 1 million requests are free. $0.2.0 per 1 million requests thereafter
+* Priced by duration
+    * 5 min limit
