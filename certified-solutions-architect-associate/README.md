@@ -30,7 +30,7 @@
 * [EC2](#ec2)
     * [Security Groups](#security-groups)
     * [EBS Volumes](#ebs-volumes)
-    * [ELB](#elastic-load-balancers)
+    * [ELB](#elastic-load-balancers-elb)
     * [Placement Groups](#placement-groups)
 * [CloudWatch](#cloudwatch)
 * [EFS](#efs)
