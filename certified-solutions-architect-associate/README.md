@@ -36,7 +36,12 @@
 * [EFS](#efs)
 * [Lambda](#lambda)
 * [Route53](#route53)
-
+* [RDS](#rds)
+    * [Aurora](#aurora)
+* [DynamoDB](#dynamodb)
+* [RedShift](#redshift)
+* [Elasticache](#elasticache)
+* [VPC](#vpc)
 
 ## 10,000 ft Overview
 
@@ -733,3 +738,4 @@ _Popular exam topic_
 
 [TOC](#toc)
 
+## VPC
