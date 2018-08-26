@@ -484,7 +484,7 @@ IAM allows you to manage users and their level of access to the AWS Console.
 
 ### Placement Groups
 
-_**Popular exam topic**_
+_Popular exam topic_
 
 * Two types of placement groups
     1. Clustered placement group
