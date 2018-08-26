@@ -423,7 +423,9 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * You cannot block specific IP address using SGs, instead use NACLs
 * You can specify allow rules, but not deny rules
 
-### EBS Volumes
+### EBS
+
+**Elastic Block Store**
 
 * Volumes exist on EBS:
     * Virtual Hard disk
@@ -435,7 +437,7 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * You can changes EBS volume sizes on the fly, including changing the size and storage type.
 * Volumes will **always** be in the same AZ as the EC2 instance 
 * To move an EC2 volume from one AZ/Region to another, take a snap or an AMI of it, then copy it to the new AZ/Region.
-* Cannot mount 1 EBS volume to multiple EC2 instances; instead use EFS
+* Cannot mount 1 EBS volume to multiple EC2 instances; instead use [EFS](#efs)
 
 #### EBS Types
 
@@ -517,11 +519,13 @@ _Popular exam topic_
 
 ## EFS
 
-* Elastic File System - File storage service for EC2 instances
+**Elastic File System**
+
+* File storage service for EC2 instances
 * Only pay for the storage you use (no pre-provisioning required)
 * Read after Write Consistency
 * Works well for a file server
-* Can be attached to multiple EC2 instances, unlike EBS
+* Can be attached to multiple EC2 instances, unlike [EBS](#ebs-volumes)
 
 [TOC](#toc)
 
@@ -563,6 +567,7 @@ _Popular exam topic_
 
 #### SOA Records
 
+* Start of Authority Record
 * Name of the server that supplied the data for the zone
 * Admin of the zone
 * Current version of the data file
@@ -580,8 +585,53 @@ _Popular exam topic_
 * Address Records
 * The fundamental type of DNS record
 * Used to translate domain to IP address
+* **CANNOT** be used to point to an ELB becuase ELBs only have DNS names. Must use an [alias record](#alias-records) instead
 * Example: 
     
 | Domain Name            | IP Address          |
 | ---------------------- | ------------------- |
 | http://www.acloud.guru | http://123.10.10.80 |
+
+#### TTL Record
+
+* Length that a DNS record is cached on either the Resolving Server or the users own local PC is equal to the "Time To Live" (TTL) in seconds.
+* Lower the TTL, the faster changes to DNS records take to propagate throughout the internet
+
+#### CNAMES
+
+* Canonical Name (CName) - Used to resolve one domain to another
+* Example:
+
+| CNAME                     | Domain Name        |
+| ------------------------- | ------------------ |
+| http://mobile.acloud.guru | http://acloud.guru |
+| http://m.acloud.guru      | http://acloud.guru |
+
+#### Alias Records
+
+* Created by AWS
+* Used to map resource record sets in your hosted zone to ELBs, CloudFront distributions, or S3 buckets that are configured as websites
+* Work like a CNAME - let you map one DNS name (www.example.com) to another 'target' DNS name (elb1234.elb.amazonaws.com)
+* **Key difference** - A CNAME can't be used for naked domain names (zone apex). You can't have a CNAME for http://acloud.guru, it must be either an A record or an Alias record
+* Can automatically detect changes in the record set (e.g., ELB DNS) and automatically reflect those changes in your hosted zone
+* Given the choice, **always** choose an Alias Record and CNAME
+
+### Route53 Routing Policies
+
+* **Simple**
+    * Default routing policy when you create a new record set
+    * Simple round-robin routing
+    * Most commonly used when you have a single resource that perfoms a given function for your domain
+* **Weighted**
+    * Allows you to split your traffic based on different weights assigned
+    * e.g., 10% to `us-east-1` and 90% to `eu-west-1`
+* **Latency**
+    * Route traffic based on the lowest network latency for your end user (i.e., which region will give them the fastest response time)
+    * Create a latency alias record set in the region where your ELBs are
+* **Failover**
+    * Used to create an active/passive setup. e.g., primary site in `eu-west-2` and DR site in `ap-southeast-2`
+    * Route53 will monitor the health of your primary site using a health check
+    * Need to create health checks in Route53
+* **Geolocation**
+    * Choose where traffic will be sent based on geographic location of your users (i.e., location from which DNS queries orginate)
+    * e.g., All queries from Europe route to servers with European specific content
