@@ -28,7 +28,14 @@
 * [Storage Gateway](#storage-gateway)
 * [Snowball](#snowball)
 * [EC2](#ec2)
-
+    * [Security Groups](#security-groups)
+    * [EBS Volumes](#ebs-volumes)
+    * [ELB](#elastic-load-balancers)
+    * [Placement Groups](#placement-groups)
+* [CloudWatch](#cloudwatch)
+* [EFS](#efs)
+* [Lambda](#lambda)
+* [Route53](#route53)
 
 
 ## 10,000 ft Overview
@@ -43,7 +50,6 @@
 
 [TOC](#toc)
 
-
 ### Compute
 
 * EC2 (Elastic Compute Cloud)
@@ -55,7 +61,6 @@
 
 [TOC](#toc)
 
-
 ### Storage
 
 * S3 - Object based storage
@@ -66,7 +71,6 @@
 
 [TOC](#toc)
 
-
 ### Databases
 
 * RDS - MySQL, Aurora, PostgreSQL
@@ -75,7 +79,6 @@
 * Red Shift (Data Wearhousing)
 
 [TOC](#toc)
-
 
 ### Migration
 
@@ -87,7 +90,6 @@
 
 [TOC](#toc)
 
-
 ### Networking & Content Delivery
 
 * VPC (Virtual Private Cloud) - Virtual data centers
@@ -97,7 +99,6 @@
 * Direct Connect - Run dedicated line from on-prem office to AWS
 
 [TOC](#toc)
-
 
 ### Developer Tools 
 
@@ -111,7 +112,6 @@ _(Not in any associate exams, yet)_
 * Cloud9 - IDE (Acquisition)
 
 [TOC](#toc)
-
 
 ### Management Tools
 
@@ -127,14 +127,12 @@ _(Not in any associate exams, yet)_
 
 [TOC](#toc)
 
-
 ### Media Services
 
 * Elastic Transcoder - Media resizer
 * MediaConvert, MediaLive, MediaPackage, MediaStore, MediaTailor
 
 [TOC](#toc)
-
 
 ### Machine Learning
 
@@ -150,7 +148,6 @@ _(Not in any associate exams, yet)_
 
 [TOC](#toc)
 
-
 ### Analytics
 
 * Athena - SQL queries against S3 buckets
@@ -164,7 +161,6 @@ _(Not in any associate exams, yet)_
 * Glue - ETL (Extract, Transform, Load) service
 
 [TOC](#toc)
-
 
 ### Security & Identity & Compliance
 
@@ -182,7 +178,6 @@ _(Not in any associate exams, yet)_
 
 [TOC](#toc)
 
-
 ### Mobile Services
 
 _Not on exams_
@@ -194,11 +189,9 @@ _Not on exams_
 
 [TOC](#toc)
 
-
 ### AR / VR
 
 * Sumerian (Beta Preview)
-
 
 ### Application Integration
 
@@ -210,14 +203,12 @@ _Not on exams_
 
 [TOC](#toc)
 
-
 ### Customer Engagement
 
 * Connect - Call center
 * **Simple Email Service**
 
 [TOC](#toc)
-
 
 ### Business Productivity
 
@@ -228,14 +219,12 @@ _Not on exams_
 
 [TOC](#toc)
 
-
 ### Desktop & App Streaming
 
 * Workspaces - VMs
 * AppStream 2.0 - Stream application from cloud
 
 [TOC](#toc)
-
 
 ### Internet of Things
 
@@ -246,13 +235,11 @@ _Not on exams_
 
 [TOC](#toc)
 
-
 ### Game Development
 
 * GameLift
 
 [TOC](#toc)
-
 
 ## IAM
 
@@ -262,7 +249,6 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * The **root account** is the only account with complete Admin access by default
 * All other accounts have **no access** by default
 
-
 ### Key Terms
 
 * Users - End Users (think people)
@@ -271,7 +257,6 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * Policies - A JSON document that defines one (or more) permissions. Assign to Users, Groups, and Roles
 
 [TOC](#toc)
-
 
 ## S3
 
@@ -310,7 +295,6 @@ IAM allows you to manage users and their level of access to the AWS Console.
 
 [TOC](#toc)
 
-
 ### S3 Storage Tiers/Classes
 
 * S3 Standard
@@ -328,7 +312,6 @@ IAM allows you to manage users and their level of access to the AWS Console.
 
 [TOC](#toc)
 
-
 ### Costs
 
 * Storage
@@ -338,7 +321,6 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * Transfer acceleration (Use of CloudFront's CDN)
 
 [TOC](#toc)
-
 
 ### Security & Encryption
 
@@ -357,7 +339,6 @@ IAM allows you to manage users and their level of access to the AWS Console.
     * Client Side Encryption
 
 [TOC](#toc)
-
 
 ## CloudFront
 
@@ -384,6 +365,8 @@ IAM allows you to manage users and their level of access to the AWS Console.
     * Tape Gateway (VTL)
         * Used for backup and uses popular backup applications like NetBackup, Backup Exec, Veeam etc.
 
+[TOC](#toc)
+
 ## Snowball
 
 * Snowball
@@ -392,6 +375,8 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * Snowball can:
     * Import to S3
     * Export from S3
+
+[TOC](#toc)
 
 ## EC2
 
@@ -421,11 +406,9 @@ IAM allows you to manage users and their level of access to the AWS Console.
 | P3 | Graphics/General Purpose GPU | Maching learning, BitCoin Mining, etc. |
 | X1 | Memory Optimized | SAP HANA/Apache Spark, etc |
 
-
 #### FIGHT DR MC PX
 
 ![FIGHT DR MC PX](/img/ec2-acronym.png "FIGHT DR MC PX")
-
 
 ### Security Groups
 
@@ -439,7 +422,6 @@ IAM allows you to manage users and their level of access to the AWS Console.
     * If you create an inbound rule allowing traffic in, that traffic is automatically allowed back out
 * You cannot block specific IP address using SGs, instead use NACLs
 * You can specify allow rules, but not deny rules
-
 
 ### EBS Volumes
 
@@ -471,7 +453,6 @@ IAM allows you to manage users and their level of access to the AWS Console.
 * You can reboot both, you will not lose your data.
 * By default, both ROOT volumes will be deleted on termination; however, with EBS volumes, you can tell AWS to keep the root device volume.
 
-
 #### Volumes & Snapshots - Security
 
 * Snapshots of encrypted volumes are encrypted automatically
@@ -486,24 +467,20 @@ IAM allows you to manage users and their level of access to the AWS Console.
         2. Unmount the RAID array
         3. Shutting down the associated EC2 instance
 
-### Elastic Load Balancers
+[TOC](#toc)
+
+### Elastic Load Balancers (ELB)
 
 * 3 Types of Load Balancers
-    * Application Load Balancers (Layer 7)
-    * Network Load Balancers (Layer 4)
-    * Classic Load Balancers (Mostly layer 4, some layer 7)
+    * **Application Load Balancers** (Layer 7)
+    * **Network Load Balancers** (Layer 4)
+    * **Classic Load Balancers** (Deprecated. Mostly layer 4, some layer 7)
 * 504 error means the gateway has timed out
     * Application is not responding within the idle timeout period
     * Troubleshoot the application. Is it the web server or database server
 * If you need the IPv4 address of your end user, look for the `X-Forwarded-For` header
 
-
-### CloudWatch
-
-* Standard Monitoring = 5 min
-* Detailed Monitoring = 1 min (cost extra)
-* Dashboards, Alarms, Events, Logs
-
+[TOC](#toc)
 
 ### Placement Groups
 
@@ -514,14 +491,12 @@ _**Popular exam topic**_
     2. Spread Placement group
 * For the exam, assume it's talking about clustered placement group unless it states otherwise
 
-
 #### Clustered placement group
 
 * Grouping of instances within a **single AZ.**
 * Recommended for applications that need low network latency, high network throughput, or both.
 * Only certain instances can be launched into a Clustered Placement Group
 * Requires unique name within AWS account
-
 
 #### Spread Placement group
 
@@ -530,7 +505,17 @@ _**Popular exam topic**_
 * _Can_ spread across multiple AZs
 * Released at re:Invent 2017
 
-### EFS
+[TOC](#toc)
+
+## CloudWatch
+
+* Standard Monitoring = 5 min
+* Detailed Monitoring = 1 min (cost extra)
+* Dashboards, Alarms, Events, Logs
+
+[TOC](#toc)
+
+## EFS
 
 * Elastic File System - File storage service for EC2 instances
 * Only pay for the storage you use (no pre-provisioning required)
@@ -538,6 +523,7 @@ _**Popular exam topic**_
 * Works well for a file server
 * Can be attached to multiple EC2 instances, unlike EBS
 
+[TOC](#toc)
 
 ## Lambda
 
@@ -568,3 +554,18 @@ _**Popular exam topic**_
     * First 1 million requests are free. $0.2.0 per 1 million requests thereafter
 * Priced by duration
     * 5 min limit
+
+[TOC](#toc)
+
+## Route53
+
+### DNS
+
+* SOA Records - stores info about:
+    * Name of the server that supplied the data for the zone
+    * Admin of the zone
+    * Current version of the data file
+    * Number or seconds a seconday name server should wait before checking for updates
+    * Number of seconds a seconday server should wait before retrying a failed zone transfer
+    * Max number of seconds that a secondary name server can use data before it must either be refreshed or expire
+    * Default number of seconds for the TTL file on resource records
