@@ -616,6 +616,8 @@ _Popular exam topic_
 * Can automatically detect changes in the record set (e.g., ELB DNS) and automatically reflect those changes in your hosted zone
 * Given the choice, **always** choose an Alias Record and CNAME
 
+[TOC](#toc)
+
 ### Route53 Routing Policies
 
 * **Simple**
@@ -635,3 +637,99 @@ _Popular exam topic_
 * **Geolocation**
     * Choose where traffic will be sent based on geographic location of your users (i.e., location from which DNS queries orginate)
     * e.g., All queries from Europe route to servers with European specific content
+
+[TOC](#toc)
+
+## RDS
+
+* Used for OLTP (Online Transaction Processing)
+* Supported Types
+    * SQL Server
+    * Oracle
+    * MySQL
+    * PostgreSQL
+    * Amazon Aurora
+    * MariaDB
+
+### Backups, Multi-AZ, & Read Replicas
+
+* Backup (automatic)
+    * 7-35 day retention period
+* DB Snapshots
+    * Done manually
+    * Unlimited retention period
+* Multi-AZ
+    * Synchronous backup to a secondary intance in a separate AZ
+    * Automatic failover
+    * **For disaster recovery only**
+    * For performance improvements, use read replicas
+* Read Replica
+    * 5 read replicas per production DB by default
+    * Spread read load across multiple 
+    * Read-only copy of your prod database
+    * Asynchronous replication from the primary RDS instance to the read replica
+    * Used for scaling, **not** for DR!
+    * Available for:
+        * MySQL
+        * PostgreSQL
+        * Aurora
+        * MariaDB
+
+### Aurora
+
+* MySQL-compatible, relation DB engine
+* Incredibly performant, affordable
+* Start with 10GB, scales in 10GB increments to 64 TB (storage autoscaling)
+* 2 copies of your data in contained in each AZ with min of 3 AZ. 6 copies of data
+* Desigend to handle loss of up to 2 copies of data without affecting database write availability and up to 3 copies without affecting read availability
+* Self-healing
+* 2 types of replicas
+    * Aurora Replicas (currently 15) - automatic failover
+    * MySQL Read replicas (currently 5)
+
+[TOC](#toc)
+
+## DynamoDB
+
+* NoSQL database service
+* Always on SSD storage
+* Spread across 3 geographically distinct data centers
+* Consistency models
+    * Eventual Consistent Reads
+    * Strongly Consistent Reads
+* Push-button scaling with no downtime
+* Read is much cheaper than writes
+
+[TOC](#toc)
+
+## RedShift
+
+* Fully managed, petabyte-scale data warehouse service in the cloud
+* Much more affordable than other data warehousing solutions
+* OLAP (Online Analytical Processing)
+* Config
+    * Single node (160Gb)
+    * Multi-Node
+        * Leader Node (manages client connections and receives queries)
+        * Compute Node (stores data and perform queries and computations).
+            * Up to 128 Compute Nodes
+* Columnar Data Storage
+    * Instand of rows, Redshift organizes by column
+    * Data stored sequentially, meaning faster, less IO queries
+* Advanced compression by default
+* Massively Parallel Processing (MPP)
+* Encrypted in transit using SSL and at rest using AES-256
+* Only available in 1 AZ
+
+[TOC](#toc)
+
+## Elasticache
+
+* Web service that makes it easy to deploy, operate, and scale an in-memory cache in the cloud
+* Used to improve latency for read-heavy applications
+* Types of Elasticache:
+    * **Memcached** - Widely adopted memory object caching systm
+    * **Redis** - Open-source in-memory key-value store
+
+[TOC](#toc)
+
