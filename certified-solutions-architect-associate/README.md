@@ -559,13 +559,29 @@ _Popular exam topic_
 
 ## Route53
 
-### DNS
+### DNS 101
 
-* SOA Records - stores info about:
-    * Name of the server that supplied the data for the zone
-    * Admin of the zone
-    * Current version of the data file
-    * Number or seconds a seconday name server should wait before checking for updates
-    * Number of seconds a seconday server should wait before retrying a failed zone transfer
-    * Max number of seconds that a secondary name server can use data before it must either be refreshed or expire
-    * Default number of seconds for the TTL file on resource records
+#### SOA Records
+
+* Name of the server that supplied the data for the zone
+* Admin of the zone
+* Current version of the data file
+* Number or seconds a seconday name server should wait before checking for updates
+* Number of seconds a seconday server should wait before retrying a failed zone transfer
+* Max number of seconds that a secondary name server can use data before it must either be refreshed or expire
+* Default number of seconds for the TTL file on resource records
+
+#### NS Records
+
+* Name Server records. Used by Top level domain servers to direct traffic to the Content DNS server which contains the au
+
+#### A Records 
+
+* Address Records
+* The fundamental type of DNS record
+* Used to translate domain to IP address
+* Example: 
+    
+| Domain Name            | IP Address          |
+| ---------------------- | ------------------- |
+| http://www.acloud.guru | http://123.10.10.80 |
