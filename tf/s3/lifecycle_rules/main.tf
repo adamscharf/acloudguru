@@ -19,8 +19,8 @@ variable "tags" {
   default = {
     owner       = "Adam Scharf"
     email       = "scharfat@gmail.com"
-    project     = "Solution Architect Associate Exam"
-    environment = "dev"
+    Terraform   = "true"
+    Environment = "ACloudGuru"
   }
 }
 
