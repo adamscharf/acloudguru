@@ -739,3 +739,53 @@ _Popular exam topic_
 [TOC](#toc)
 
 ## VPC
+
+![VPC Diagram](/img/vpc-diagram.png "VPC Diagram")
+
+* **Virtual Private Cloud** - Virtual data center in the cloud
+* Consists of IGWs (or Virtual Private Gateways), Route Tables, NACLs, Subnets, and SGs
+* 1 subnet = 1 AZ
+* 1 VPC = 1 Internet gateway
+* SGs = stateful
+* NACLs = stateless
+* **NO TRANSITIVE PEERING**
+
+### Default VPC
+
+* User friendly, allowing you to immediately deploy instances
+* All subnets in default VPC have a route out to the internet
+* Each EC2 instance has a private and public IP address
+* If delete, the only way to get it back is by contacting AWS
+
+### VPC Peering
+
+* Connect one VPC to another via a direct network route using private IP addresses
+* Behave as if they were on the same private network
+* You can peer VPC's with other AWS accounts as well as with other VPCs in the same account
+* Peering is **always** in a star configuration, not transitive.
+    * example: A <-> B <-> C. A would not be peered to C
+
+### Network Address Transalation (NAT)
+
+#### NAT Instance
+
+* During creation, you must disable source/destination check on the NAT instance
+* Must be in Public Subnet
+* Must be a route out of the private subnet to the NAT instance in order for this to work
+* Amount of traffic that NAT instances can support depends on the instance size. If you are bottlenecking, increase the instance size.
+* Can create H.A. using ASG, multiple subnets in different AZs, and a script to automate failover
+* Exist behind a SG
+
+#### NAT Gateway
+
+* IPv4 only. For IPv6, use Egress Only Internet Gateway
+* Preferred by the enterprise
+* Scale automatically up to 10Gbps
+* No need to patch
+* Not associated with SGs
+* Automatically assigned a public IP address
+* Remember to update your route tables
+* No need to disable Source/Destination Checks
+* More secure than a NAT instance
+    * No SSH access
+    * Completely managed by AWS
