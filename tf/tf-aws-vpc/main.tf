@@ -42,6 +42,82 @@ resource "aws_subnet" "public" {
   )}"
 }
 
+resource "aws_internet_gateway" "main" {
+  vpc_id = "${aws_vpc.main.id}"
+
+  tags = "${merge(
+    var.tags,
+    map(
+        "Name", "Main IGW"
+    )
+  )}"
+}
+
+resource "aws_eip" "nat_gw" {
+  depends_on = ["aws_internet_gateway.main"]
+  vpc        = true
+
+  tags = "${merge(
+    var.tags,
+    map(
+        "Name", "NAT GW Elastic IP"
+    )
+  )}"
+}
+
+resource "aws_nat_gateway" "gw" {
+  subnet_id     = "${aws_subnet.public.id}"
+  allocation_id = "${aws_eip.nat_gw.id}"
+
+  tags = "${merge(
+    var.tags,
+    map(
+        "Name", "NAT GW"
+    )
+  )}"
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = "${aws_vpc.main.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.main.id}"
+  }
+
+  tags = "${merge(
+    var.tags,
+    map(
+        "Name", "Public Route Table"
+    )
+  )}"
+
+  depends_on = ["aws_internet_gateway.main"]
+}
+
+resource "aws_default_route_table" "default" {
+  default_route_table_id = "${aws_vpc.main.default_route_table_id}"
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.gw.id}"
+  }
+
+  tags = "${merge(
+    var.tags,
+    map(
+        "Name", "Default Route Table"
+    )
+  )}"
+
+  depends_on = ["aws_internet_gateway.main"]
+}
+
+resource "aws_route_table_association" "a" {
+  subnet_id      = "${aws_subnet.public.id}"
+  route_table_id = "${aws_route_table.public.id}"
+}
+
 resource "aws_security_group" "web" {
   name        = "Web SG"
   description = "Allow public inbound traffic for HTTP, HTTPS, and SSH"
@@ -122,82 +198,6 @@ resource "aws_security_group" "private" {
         "Name", "Private SG"
     )
   )}"
-}
-
-resource "aws_internet_gateway" "main" {
-  vpc_id = "${aws_vpc.main.id}"
-
-  tags = "${merge(
-    var.tags,
-    map(
-        "Name", "Main IGW"
-    )
-  )}"
-}
-
-resource "aws_eip" "nat_gw" {
-  depends_on = ["aws_internet_gateway.main"]
-  vpc        = true
-
-  tags = "${merge(
-    var.tags,
-    map(
-        "Name", "NAT GW Elastic IP"
-    )
-  )}"
-}
-
-resource "aws_nat_gateway" "gw" {
-  subnet_id     = "${aws_subnet.public.id}"
-  allocation_id = "${aws_eip.nat_gw.id}"
-
-  tags = "${merge(
-    var.tags,
-    map(
-        "Name", "NAT GW"
-    )
-  )}"
-}
-
-resource "aws_route_table" "public" {
-  vpc_id = "${aws_vpc.main.id}"
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.main.id}"
-  }
-
-  tags = "${merge(
-    var.tags,
-    map(
-        "Name", "Public Route Table"
-    )
-  )}"
-
-  depends_on = ["aws_internet_gateway.main"]
-}
-
-resource "aws_default_route_table" "default" {
-  default_route_table_id = "${aws_vpc.main.default_route_table_id}"
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.gw.id}"
-  }
-
-  tags = "${merge(
-    var.tags,
-    map(
-        "Name", "Default Route Table"
-    )
-  )}"
-
-  depends_on = ["aws_internet_gateway.main"]
-}
-
-resource "aws_route_table_association" "a" {
-  subnet_id      = "${aws_subnet.public.id}"
-  route_table_id = "${aws_route_table.public.id}"
 }
 
 data "aws_ami" "amzn2" {
